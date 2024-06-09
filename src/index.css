@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Roboto:wght@400;700&family=Titillium+Web&display=swap');
+
+body {
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 1.1rem ;
+  background-color: black;
+}
+
+.todo{
+  height: 80vh;
+  text-align: center;
+}
+
+
+main {
+  padding: 0 !important;
+}
+
+.content,
+p {
+  padding: 1rem 0;
+}
+

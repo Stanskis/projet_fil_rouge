@@ -1,0 +1,40 @@
+.offcanvas{
+    width: 300px !important;
+}
+.pointer{
+    cursor: pointer;
+}
+
+.nav-item {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 3rem !important;
+    margin-right: 0 !important;
+}
+.log{
+    margin-left: 10rem !important;
+}
+@media only screen and (max-width: 1400px){
+    .log{
+         margin-left: 3.15rem !important;
+     }
+}
+
+
+.nav-menu li.active {
+    color: white !important;
+    border-bottom: 2px solid white;
+}
+
+.nav-item .btn{
+    font-size: 17px;
+    font-weight: 500;
+    border: 0;
+    padding: 8px !important;
+    color: grey !important;
+  }
+  .nav-item .btn:hover{
+    color: rgba(255, 255, 255, 0.75) !important;
+  }

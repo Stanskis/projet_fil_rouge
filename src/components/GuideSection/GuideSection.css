@@ -1,0 +1,15 @@
+.bg-img{
+    background: url('./Segotep-Build_left.webp'); 
+    background-repeat: no-repeat;
+}
+
+
+
+.bg-color{
+    background-color: rgb(253, 182, 29);
+}
+
+.guide{
+    text-shadow: 1px 1px black;
+    color: rgb(255, 255, 255);
+}

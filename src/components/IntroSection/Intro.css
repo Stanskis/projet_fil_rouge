@@ -1,0 +1,12 @@
+.intro{
+    padding-top: 200px !important;
+    padding-bottom: 24rem !important;
+    background: url('../../assets/intro3.webp');
+    background-size: cover;
+}
+
+.intro h1{
+    /* margin-bottom: 3rem !important; */
+    font-size: 3.1rem !important;
+    text-shadow: 2px 2px black;
+}

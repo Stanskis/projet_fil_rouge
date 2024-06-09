@@ -1,0 +1,17 @@
+
+.build.bg-img{
+    background: url('../../components/GuideSection/Segotep-Build_left.webp'); 
+    background-repeat: no-repeat;
+    background-size: 35% 100%;
+}
+
+@media only screen and (max-width: 530px) {
+    .build.bg-img{
+        background-size: 50% 100%;
+    }
+}
+
+table tr td, table tr th{
+    background-color: rgba(253, 253, 253, 0.034) !important;
+    color: white !important;
+}

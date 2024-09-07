@@ -24,7 +24,7 @@ export default function SignUp({ closeModal }) {
 
       try {
         // Send data to backend
-        const response = await fetch('http://localhost:3001/register', {
+        const response = await fetch('http://localhost:3001/api/users/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

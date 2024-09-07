@@ -1,15 +1,15 @@
 const express = require('express');
 const mysql = require('mysql2');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 
 const app = express();
 const port = 3001;
 
-// Middleware to parse JSON bodies and handle CORS
+// Middleware
 app.use(express.json());
-app.use(cors()); // Enable CORS for all origins
+app.use(cors());
 
-// Create MySQL connection pool
+// Create MySQL connection
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -25,23 +25,14 @@ db.connect((err) => {
     console.log('Connected to MySQL database.');
 });
 
-// Define a route to register users
-app.post('/register', (req, res) => {
-    const { username, email, password } = req.body;
+// Export db and app
+module.exports = { db, app };
 
-    if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Please provide all required fields' });
-    }
+// Routes
+const userRegister = require('./routes/Register');  // Ensure this path is correct
 
-    const query = 'INSERT INTO app_users (username, email, password) VALUES (?, ?, ?)';
-    db.query(query, [username, email, password], (err, result) => {
-        if (err) {
-            console.error('Error registering user:', err);
-            return res.status(500).json({ message: 'Server error' });
-        }
-        res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
-    });
-});
+// Use the routes
+app.use('/api/users', userRegister);  // Ensure '/api/users' is the intended route
 
 // Start the server
 app.listen(port, () => {

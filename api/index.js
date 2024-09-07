@@ -1,18 +1,20 @@
 const express = require('express');
 const mysql = require('mysql2');
+const cors = require('cors'); // Import cors
 
 const app = express();
 const port = 3001;
 
-// Middleware to parse JSON bodies
+// Middleware to parse JSON bodies and handle CORS
 app.use(express.json());
+app.use(cors()); // Enable CORS for all origins
 
 // Create MySQL connection pool
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',        // Your MySQL username
-    password: '',        // Your MySQL password
-    database: 'pc-builder'  // Your existing database name
+    user: 'root',
+    password: '',
+    database: 'pc-builder'
 });
 
 db.connect((err) => {

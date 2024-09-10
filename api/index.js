@@ -7,7 +7,9 @@ const port = 3001;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
 
 // Create MySQL connection
 const db = mysql.createConnection({
@@ -26,13 +28,11 @@ db.connect((err) => {
 });
 
 // Export db and app
-module.exports = { db, app };
+module.exports = { db };
 
 // Routes
-const userRegister = require('./routes/Register');  // Ensure this path is correct
-
-// Use the routes
-app.use('/api/users', userRegister);  // Ensure '/api/users' is the intended route
+const userAuth = require('./routes/auth');
+app.use('/api/users', userAuth);
 
 // Start the server
 app.listen(port, () => {

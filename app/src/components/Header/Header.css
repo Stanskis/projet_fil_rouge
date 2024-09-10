@@ -38,3 +38,20 @@
   .nav-item .btn:hover{
     color: rgba(255, 255, 255, 0.75) !important;
   }
+
+.btn-dark-red {
+    color:#d13833 !important;
+}
+
+.btn-dark-red:hover {
+    color: #be7676 !important;
+}
+
+.user-profile{
+    margin-left: 6rem !important;
+}
+@media only screen and (max-width: 1400px){
+    .user-profile{
+        margin-left: 4rem !important;
+    }
+}

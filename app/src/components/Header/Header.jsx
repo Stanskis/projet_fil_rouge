@@ -1,14 +1,24 @@
-import './Header.css'
-import {NavLink} from 'react-router-dom';
-// import React from 'react';
+import "./Header.css";
+import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 
+export default function Header({ openSignUpModal, openLogInModal }) {
+  const [username, setUsername] = useState(null);
 
-export default function Header({ openSignUpModal, openLogInModal }){
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    setUsername(storedUsername);
+  }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    setUsername(null);
+  };
 
   return (
     <header>
-      <nav className="navbar navbar-expand-xxl navbar-dark bg-dark overflow-hidden">
+      <nav className="navbar navbar-expand-xxl navbar-dark bg-dark">
         <div className="container">
           <a className="navbar-brand" href="/">
             LOGO
@@ -39,7 +49,7 @@ export default function Header({ openSignUpModal, openLogInModal }){
             </div>
             <div className="offcanvas-body text-center me-5">
               <ul className="navbar-nav justify-content-center flex-grow-1">
-                <li className="nav-item log">
+                <li className="nav-item">
                   <NavLink
                     to="/home"
                     className={({ isActive }) =>
@@ -94,28 +104,55 @@ export default function Header({ openSignUpModal, openLogInModal }){
                     Forum
                   </NavLink>
                 </li>
-                <li className="nav-item log">
-                  <a
-                    className="nav-link pointer"
-                    onClick={openSignUpModal}
-                    data-bs-dismiss="offcanvas"
-                  >
-                    {/* <button className="btn"> */}
-                    Sign Up
-                    {/* </button> */}
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link pointer"
-                    onClick={openLogInModal}
-                    data-bs-dismiss="offcanvas"
-                  >
-                    {/* <button className="btn"> */}
-                    Log In
-                    {/* </button> */}
-                  </a>
-                </li>
+                {/*Login check*/}
+                {username ? (
+                  <li className="nav-item dropdown user-profile">
+                    <a
+                      className="nav-link dropdown-toggle text-light"
+                      href="#"
+                      id="navbarDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Welcome, {username}
+                    </a>
+                    <ul
+                      className="dropdown-menu dropdown-menu-dark dropdown-menu-end"
+                      aria-labelledby="navbarDropdown"
+                    >
+                      <li>
+                        <button
+                          className="dropdown-item btn-dark-red"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link pointer"
+                        onClick={openSignUpModal}
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Sign Up
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link pointer"
+                        onClick={openLogInModal}
+                        data-bs-dismiss="offcanvas"
+                      >
+                        Log In
+                      </a>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>

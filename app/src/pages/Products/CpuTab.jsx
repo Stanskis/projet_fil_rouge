@@ -1,59 +1,156 @@
-import { cpus } from '../../components/Data/Cpus.js';
-// import AddButton from './AddButton'
+// import { cpus } from '../../components/Data/Cpus.js';
+import { useEffect, useState } from 'react';
 
-// const handleClick = () =>{
-//   console.log('clicked')
-// }
-
+const columnMap = {
+  name: "Name",
+  core_count: "Core Count",
+  core_clock: "Core Clock",
+  boost_clock: "Boost Core Clock",
+  tdp: "TDP",
+  graphics: "Integrated Graphics",
+  rating: "Rating",
+  price: "Price",
+};
 
 export default function CpuTab(){
+  const [columns, setColumns] = useState([]);
+  const [cpus, setCpus] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsToShow = 12;
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/table/cpus")
+      .then((response) => response.json())
+      .then((data) => {
+        const transformedColumns = data.map((col) => ({
+          ...col,
+          COLUMN_NAME: columnMap[col.COLUMN_NAME] || col.COLUMN_NAME,
+        }));
+        setColumns(transformedColumns);
+      })
+      .catch((error) => console.error("Failed fetching columns:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/all_cpus")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = data.map((cpu) => {
+          const formattedCpu = {};
+
+          columns.forEach((col) => {
+            const originalKey = Object.keys(cpu).find((key) =>
+              columnMap[key] === col.COLUMN_NAME
+            );
+
+            if (originalKey) {
+              const value = cpu[originalKey];
+              let unit = '';
+
+              // Assign units based on data type
+              if (col.DATA_TYPE === 'decimal') {
+                unit = '€';
+              } else if (col.DATA_TYPE === 'float') {
+                unit = 'GHz';
+              } else if (col.DATA_TYPE === 'int' && col.COLUMN_NAME === 'TDP') {
+                unit = 'W';
+              }
+
+              formattedCpu[col.COLUMN_NAME] = `${value} ${unit}`;
+            } else {
+              // Default value if no matching key is found
+              formattedCpu[col.COLUMN_NAME] = 'N/A';
+            }
+        });
+          return { ...cpu, ...formattedCpu };
+        });
+        setCpus(formattedData);
+      })
+      .catch((error) => console.error("Failed fetching CPUs:", error));
+  }, [columns]); // Depend on columns to reformat data when columns change
+
+
+
+    // Calculate items to show per page
+    const indexOfLastItem = currentPage * itemsToShow;
+    const indexOfFirstItem = indexOfLastItem - itemsToShow;
+    const currentItems = cpus.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(cpus.length / itemsToShow);
+
+    const handlePageChange = (pageNumber) => {
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleBack = () => {
+      if (currentPage > 1) {
+        handlePageChange(currentPage - 1);
+      }
+    };
+  
+    const handleNext = () => {
+      if (currentPage < totalPages) {
+        handlePageChange(currentPage + 1);
+      }
+    };
+
+    const handleFirstPage = () => {
+      handlePageChange(1);
+    }
+    const handleLastPage = () => {
+      handlePageChange(totalPages);
+    }
+
   return (
     <div className="table-responsive">
       <table className="table table-striped text-center">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Core Count</th>
-            <th>Base Clock Frequency</th>
-            <th>Boost Clock Frequency</th>
-            <th>TDP</th>
-            <th>Integrated GPU</th>
-            <th>Price</th>
+            {columns.map((col) => (
+              <th key={col.COLUMN_NAME}>{col.COLUMN_NAME}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {cpus.map((cpu) => (
-            <tr key={cpu.title}>
-              <td>
-                <img className="product-img p-2" src={cpu.img} alt="" />
-                <h5 className="m-0">{cpu.title}</h5>
-              </td>
-              <td>
-                <h6 className="m-0">{cpu.cores}</h6>
-              </td>
-              <td>
-                <h6 className="m-0">{cpu.coreClock}</h6>
-              </td>
-              <td>
-                <h6 className="">{cpu.boostClock}</h6>
-              </td>
-              <td>
-                <h6>{cpu.tdp}</h6>
-              </td>
-              <td>
-                <h6>{cpu.igpu}</h6>
-              </td>
-              <td>
-                <h6>{cpu.price}x€</h6>
-                <button className="btn btn-primary" data-title={cpu.title}>
-                  +Add
-                </button>
-                {/* <AddButton title={cpu.title}/> */}
-              </td>
-            </tr>
+          {/* Dynamically render rows based on the CPU data */}
+          {currentItems.map((cpu) => (
+  <tr key={cpu.id}>
+    {columns.map((col) => (
+      <td key={`${cpu.id}-${col.COLUMN_NAME}`}>
+        {cpu[col.COLUMN_NAME] || 'N/A'} {/* Display data or placeholder */}
+      </td>
+    ))}
+  </tr>
           ))}
         </tbody>
       </table>
+      <div className="pagination-controls text-center m-5">
+        <button
+        onClick={handleFirstPage}
+        className="btn btn-secondary mx-1">
+          First Page
+        </button>
+        <button
+          onClick={handleBack}
+          className="btn btn-primary mx-1"
+        >
+          Back
+        </button>
+        <span className="text-warning m-2">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNext}
+          className="btn btn-primary mx-1"
+        >
+          Next
+        </button>
+        <button
+        onClick={handleLastPage}
+        className="btn btn-secondary mx-1">
+          Last Page
+        </button>
+      </div>
     </div>
   );
 }

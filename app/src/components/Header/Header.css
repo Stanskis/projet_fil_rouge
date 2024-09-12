@@ -50,8 +50,14 @@
 .user-profile{
     margin-left: 6rem !important;
 }
+.spacing {
+    margin-right: 6rem !important;
+}
 @media only screen and (max-width: 1400px){
     .user-profile{
         margin-left: 4rem !important;
+    }
+    .spacing {
+        margin-right: 0rem !important;
     }
 }

@@ -93,7 +93,7 @@ export default function Header({ openSignUpModal, openLogInModal }) {
                     Guides
                   </NavLink>
                 </li>
-                <li className="nav-item">
+                <li className="nav-item spacing">
                   <NavLink
                     className={({ isActive }) =>
                       "nav-link" + (isActive ? " active" : "")

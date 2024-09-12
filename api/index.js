@@ -27,12 +27,17 @@ db.connect((err) => {
     console.log('Connected to MySQL database.');
 });
 
-// Export db and app
+// Export db
 module.exports = { db };
 
 // Routes
 const userAuth = require('./routes/auth');
+const products = require('./routes/product');
+
 app.use('/api/users', userAuth);
+app.use('/api', products);
+
+
 
 // Start the server
 app.listen(port, () => {

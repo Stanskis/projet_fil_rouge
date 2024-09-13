@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import './Products.css';
 import AddButton from '../../components/ProductAddButton/AddButton';
+import getImages from '../../assets/cpuImages';
 
 const columnMap = {
   name: "Name",
@@ -76,29 +77,6 @@ export default function CpuTab(){
         }
         return formattedValue;
       }
-        //     if (originalKey) {
-        //       const value = cpu[originalKey];
-        //       let unit = '';
-
-        //       // Assign units based on data type
-        //       if (col.DATA_TYPE === 'decimal') {
-        //         unit = '€';
-        //       } else if (col.DATA_TYPE === 'float') {
-        //         unit = 'GHz';
-        //       } else if (col.DATA_TYPE === 'int' && col.COLUMN_NAME === 'TDP') {
-        //         unit = 'W';
-        //       }
-
-        //       formattedCpu[col.COLUMN_NAME] = `${value} ${unit}`;
-        //     } else {
-        //       // Default value if no matching key is found
-        //       formattedCpu[col.COLUMN_NAME] = 'N/A';
-        //     }
-        // });
-        //   return { ...cpu, ...formattedCpu };
- 
-
-
 
     // Calculate items to show per page
     const indexOfLastItem = currentPage * itemsToShow;
@@ -130,10 +108,6 @@ export default function CpuTab(){
       handlePageChange(totalPages);
     }
 
-    // const handleAddButton = (productId) => {
-    //   console.log(`clicked on ${productId}`);
-    // }
-
   return (
     <div className="table-responsive table-container">
       <table className="table table-striped text-center">
@@ -150,12 +124,19 @@ export default function CpuTab(){
             <tr key={cpu.id_cpu}>
               {columns.map((col) => (
                 <td key={`${cpu.id_cpu}-${col.COLUMN_NAME}`}>
-                  {cpu[col.COLUMN_NAME] || "N/A"}
+                  {col.COLUMN_NAME === "Name" ? (
+                    <>
+                      {getImages({ product: cpu })}
+                      {cpu[col.COLUMN_NAME] || "N/A"}
+                    </>
+                  ) : (
+                    cpu[col.COLUMN_NAME] || "N/A"
+                  )}
                 </td>
               ))}
               <td>
-                {columns.find(col => col.COLUMN_NAME === "Price") && (
-                  <AddButton productId={cpu.id_cpu}/>
+                {columns.find((col) => col.COLUMN_NAME === "Price") && (
+                  <AddButton productId={cpu.id_cpu} />
                 )}
               </td>
             </tr>

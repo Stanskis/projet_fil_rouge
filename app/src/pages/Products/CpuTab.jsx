@@ -1,5 +1,7 @@
 // import { cpus } from '../../components/Data/Cpus.js';
 import { useEffect, useState } from 'react';
+import './Products.css';
+import AddButton from '../../components/ProductAddButton/AddButton';
 
 const columnMap = {
   name: "Name",
@@ -16,7 +18,7 @@ export default function CpuTab(){
   const [columns, setColumns] = useState([]);
   const [cpus, setCpus] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsToShow = 12;
+  const itemsToShow = 10;
 
   useEffect(() => {
     fetch("http://localhost:3001/api/table/cpus")
@@ -31,43 +33,70 @@ export default function CpuTab(){
       .catch((error) => console.error("Failed fetching columns:", error));
   }, []);
 
+
+
   useEffect(() => {
     fetch("http://localhost:3001/api/all_cpus")
       .then((response) => response.json())
       .then((data) => {
         const formattedData = data.map((cpu) => {
+  
           const formattedCpu = {};
 
           columns.forEach((col) => {
-            const originalKey = Object.keys(cpu).find((key) =>
-              columnMap[key] === col.COLUMN_NAME
+            const originalKey = Object.keys(cpu).find(
+              (key) => columnMap[key] === col.COLUMN_NAME
             );
 
             if (originalKey) {
               const value = cpu[originalKey];
-              let unit = '';
-
-              // Assign units based on data type
-              if (col.DATA_TYPE === 'decimal') {
-                unit = '€';
-              } else if (col.DATA_TYPE === 'float') {
-                unit = 'GHz';
-              } else if (col.DATA_TYPE === 'int' && col.COLUMN_NAME === 'TDP') {
-                unit = 'W';
-              }
-
-              formattedCpu[col.COLUMN_NAME] = `${value} ${unit}`;
+              formattedCpu[col.COLUMN_NAME] = formatValue(value, col.DATA_TYPE, col.COLUMN_NAME);
             } else {
-              // Default value if no matching key is found
-              formattedCpu[col.COLUMN_NAME] = 'N/A';
+              formattedCpu[col.COLUMN_NAME] = "N/A";
             }
-        });
+          });
+
           return { ...cpu, ...formattedCpu };
         });
         setCpus(formattedData);
       })
       .catch((error) => console.error("Failed fetching CPUs:", error));
-  }, [columns]); // Depend on columns to reformat data when columns change
+  }, [columns]);
+
+
+      function formatValue(value, dataType, columnName) {
+        let formattedValue = value;
+
+        if (dataType === "decimal") {
+          formattedValue = `${value} €`;
+        } else if (dataType === "float") {
+          formattedValue = `${value} GHz`;
+        } else if (dataType === "int" && columnName === "TDP") {
+          formattedValue = `${value} W`;
+        }
+        return formattedValue;
+      }
+        //     if (originalKey) {
+        //       const value = cpu[originalKey];
+        //       let unit = '';
+
+        //       // Assign units based on data type
+        //       if (col.DATA_TYPE === 'decimal') {
+        //         unit = '€';
+        //       } else if (col.DATA_TYPE === 'float') {
+        //         unit = 'GHz';
+        //       } else if (col.DATA_TYPE === 'int' && col.COLUMN_NAME === 'TDP') {
+        //         unit = 'W';
+        //       }
+
+        //       formattedCpu[col.COLUMN_NAME] = `${value} ${unit}`;
+        //     } else {
+        //       // Default value if no matching key is found
+        //       formattedCpu[col.COLUMN_NAME] = 'N/A';
+        //     }
+        // });
+        //   return { ...cpu, ...formattedCpu };
+ 
 
 
 
@@ -101,8 +130,12 @@ export default function CpuTab(){
       handlePageChange(totalPages);
     }
 
+    // const handleAddButton = (productId) => {
+    //   console.log(`clicked on ${productId}`);
+    // }
+
   return (
-    <div className="table-responsive">
+    <div className="table-responsive table-container">
       <table className="table table-striped text-center">
         <thead>
           <tr>
@@ -114,40 +147,35 @@ export default function CpuTab(){
         <tbody>
           {/* Dynamically render rows based on the CPU data */}
           {currentItems.map((cpu) => (
-  <tr key={cpu.id}>
-    {columns.map((col) => (
-      <td key={`${cpu.id}-${col.COLUMN_NAME}`}>
-        {cpu[col.COLUMN_NAME] || 'N/A'} {/* Display data or placeholder */}
-      </td>
-    ))}
-  </tr>
+            <tr key={cpu.id_cpu}>
+              {columns.map((col) => (
+                <td key={`${cpu.id_cpu}-${col.COLUMN_NAME}`}>
+                  {cpu[col.COLUMN_NAME] || "N/A"}
+                </td>
+              ))}
+              <td>
+                {columns.find(col => col.COLUMN_NAME === "Price") && (
+                  <AddButton productId={cpu.id_cpu}/>
+                )}
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
       <div className="pagination-controls text-center m-5">
-        <button
-        onClick={handleFirstPage}
-        className="btn btn-secondary mx-1">
+        <button onClick={handleFirstPage} className="btn btn-secondary mx-1">
           First Page
         </button>
-        <button
-          onClick={handleBack}
-          className="btn btn-primary mx-1"
-        >
+        <button onClick={handleBack} className="btn btn-primary mx-1">
           Back
         </button>
         <span className="text-warning m-2">
           Page {currentPage} of {totalPages}
         </span>
-        <button
-          onClick={handleNext}
-          className="btn btn-primary mx-1"
-        >
+        <button onClick={handleNext} className="btn btn-primary mx-1">
           Next
         </button>
-        <button
-        onClick={handleLastPage}
-        className="btn btn-secondary mx-1">
+        <button onClick={handleLastPage} className="btn btn-secondary mx-1">
           Last Page
         </button>
       </div>

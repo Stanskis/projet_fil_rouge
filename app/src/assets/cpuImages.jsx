@@ -9,7 +9,7 @@ const cpuImages = {
 }
 
 export default function getImages({product}){
-    const {id, name} = product;
+    const {name} = product;
 
     let imageUrl;
 
@@ -26,7 +26,7 @@ export default function getImages({product}){
     }else if(name.includes('i9')){
         imageUrl = cpuImages[6];
     }else {
-        imageUrl = cpuImages[id] || cpuImages.default;
+        imageUrl = cpuImages.default;
     }
 
     return (

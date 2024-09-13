@@ -116,6 +116,7 @@ export default function CpuTab(){
             {columns.map((col) => (
               <th key={col.COLUMN_NAME}>{col.COLUMN_NAME}</th>
             ))}
+            <th></th>
           </tr>
         </thead>
         <tbody>

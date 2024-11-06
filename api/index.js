@@ -43,15 +43,3 @@ app.use('/api', products);
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-
-// const os = require('os');
-// let res = os.networkInterfaces();
-// let res2 = os.uptime();
-// let res3 = os.userInfo();
-// let res4 = os.release();
-// let res5 = os.endianness();
-// let res6 = os.version();
-
-
-
-// console.log(res, res2, res3, res4, res5 , res6);

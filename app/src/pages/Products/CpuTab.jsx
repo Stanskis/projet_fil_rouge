@@ -1,7 +1,7 @@
 // import { cpus } from '../../components/Data/Cpus.js';
 import { useEffect, useState } from 'react';
 import './Products.css';
-import AddButton from '../../components/ProductAddButton/AddButton';
+import CpuAddButton from '../../components/ProductAddButton/CpuAddButton';
 import getImages from '../../assets/cpuImages';
 
 const columnMap = {
@@ -25,10 +25,13 @@ export default function CpuTab(){
     fetch("http://localhost:3001/api/table/cpus")
       .then((response) => response.json())
       .then((data) => {
-        const transformedColumns = data.map((col) => ({
-          ...col,
-          COLUMN_NAME: columnMap[col.COLUMN_NAME] || col.COLUMN_NAME,
-        }));
+        const transformedColumns = Object.keys(columnMap).map((key) => {
+          const originalColumn = data.find((col) => col.COLUMN_NAME.toLowerCase() === key);
+          return originalColumn 
+            ? { ...originalColumn, COLUMN_NAME: columnMap[key] } 
+            : { COLUMN_NAME: columnMap[key], DATA_TYPE: null };
+        });
+  
         setColumns(transformedColumns);
       })
       .catch((error) => console.error("Failed fetching columns:", error));
@@ -137,7 +140,10 @@ export default function CpuTab(){
               ))}
               <td>
                 {columns.find((col) => col.COLUMN_NAME === "Price") && (
-                  <AddButton productId={cpu.id_cpu} />
+                  <CpuAddButton 
+                  productId={cpu.id_cpu} 
+                  componentData={{ name: cpu.name, price: cpu.price, tdp: cpu.tdp }}  // Pass componentData
+                />
                 )}
               </td>
             </tr>

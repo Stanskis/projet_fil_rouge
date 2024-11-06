@@ -10,7 +10,7 @@ import Footer from './components/Footer/Footer';
 import SignUp from './components/Account/Signup';
 import LogIn from './components/Account/Login';
 import { useState } from 'react';
-
+import { SelectedComponentsProvider } from '../src/components/ComponentSelected/ComponentSelected';
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,6 +34,7 @@ export default function App() {
 
   return (
     <>
+      <SelectedComponentsProvider>
         <Header openSignUpModal={openSignUpModal} openLogInModal={openLogInModal} />
         <Routes>
           <Route index element={<HomePage />} />
@@ -46,6 +47,7 @@ export default function App() {
         <Footer />
         {modalOpen && modalScreen === "signup" && <SignUp closeModal={closeModal} />}
         {modalOpen && modalScreen === "login" && <LogIn closeModal={closeModal} />}
+      </SelectedComponentsProvider>
     </>
   );
 }
